@@ -1,0 +1,6 @@
+*.csv*
+*.xlsx*
+env
+*.exe*
+*.pyc*
+
