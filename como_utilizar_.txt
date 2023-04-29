@@ -1,0 +1,9 @@
+- O arquivo land_file.csv é o arquivo que contém as parcels que serão extraídas
+-  Ao clicar em main.exe , o programa vai fazer a leitura dos parcels e ir contando , 
+quantos parcels estão sendo extraídos do site.
+- Para utilizar basta substituir o land_file.csv por um novo arquivo do site , 
+https://www.sos.ms.gov/tax-forfeited-inventory e manter esse arquivo com as parcels que você deseja consultar
+ podendo ser em múltiplos condados.
+  -  Ao final será gerado um arquivo .xlsx chamado parcels_result, com todas as informações das respectivas parcels.
+
+  

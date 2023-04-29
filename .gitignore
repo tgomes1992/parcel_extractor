@@ -3,4 +3,7 @@
 env
 *.exe*
 *.pyc*
+output
+land_file
+*.zip*
 

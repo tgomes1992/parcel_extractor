@@ -10,16 +10,16 @@ error_jobs =  []
 
 def get_parcels():
     
-    df  = pd.read_csv('land_file.csv' )
-    ndf = df.reset_index()
-    ndf.columns = ["parcel_number","county","property_address","assessed_owners","market_value" , "item"]
+    df  = pd.read_csv('land_file.csv' ,  dtype=str )
+    df.columns = ["parcel_number","county","property_address","assessed_owners","market_value" ]
     parcels = []
-    for parcel in ndf.iterrows():
+    
+    for parcel in df.iterrows():
         item  = parcel[1].to_dict()
-        item['parcel_number'] = item["parcel_number"].replace('"',"").replace("=","")
         parcels.append(item)
-
     return parcels
+
+
 
 
 def processar_lista_de_parcelas(lista):
@@ -51,5 +51,5 @@ for parcel_lista in lista_de_parcelas:
     processar_lista_de_parcelas(parcel_lista)
 
 
-pd.DataFrame.from_dict(resultado_final).to_excel('buscas_parcels.xlsx')
+pd.DataFrame.from_dict(resultado_final).to_excel('parcels_result.xlsx')
 
