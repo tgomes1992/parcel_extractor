@@ -2,18 +2,20 @@ import pandas as pd
 from ParcelModule import SiteRequests
 import time
 import numpy as np
+import asyncio
+import aiohttp
+from ParcelModule.AsyncSiteRequests import AsyncSiteRequests
+import requests
 
-buscar_site = SiteRequests()
+buscar_site = AsyncSiteRequests()
 
 resultado_final =  []
 error_jobs =  []
 
-def get_parcels():
-    
-    df  = pd.read_csv('land_file.csv' ,  dtype=str )
+def get_parcels():    
+    df  = pd.read_excel('land_file_versao_excel.xlsx' ,  dtype=str )
     df.columns = ["parcel_number","county","property_address","assessed_owners","market_value" ]
-    parcels = []
-    
+    parcels = []    
     for parcel in df.iterrows():
         item  = parcel[1].to_dict()
         parcels.append(item)
@@ -23,33 +25,34 @@ def get_parcels():
 
 
 def processar_lista_de_parcelas(lista):
+    rotinas = []
     for parcel in lista:
-        time.sleep(3)
         try:
             teste  = buscar_site.get_parcel_data(parcel["parcel_number"] , parcel['county'])
             if type(teste) == dict:
                 resultado_final.append(teste)
         except Exception as e:
-            print ("ERRO")
-            print (parcel)
-            print (e)
-            time.sleep(5)
-            teste  = buscar_site.get_parcel_data(parcel["parcel_number"] , parcel['county'])
-            if type(teste) == dict:
-                resultado_final.append(teste)
-            continue
-
-        finally:
-            print (len(resultado_final))
-                
-
-lista_de_parcelas = np.array_split(get_parcels(), 10)
+            pass
 
 
+
+
+async def main():
+    parcels = get_parcels()
+    with requests.session() as session:
+        coroutines = []
+        for parcel in parcels:
+            coroutines.append(buscar_site.get_parcel_data(session,parcel['parcel_number'] ,parcel['county']))
+        data = await asyncio.gather(*coroutines)
+        df = pd.DataFrame.from_dict(data)
+        df.to_excel("parcels_result.xlsx")
     
-for parcel_lista in lista_de_parcelas:
-    processar_lista_de_parcelas(parcel_lista)
 
 
-pd.DataFrame.from_dict(resultado_final).to_excel('parcels_result.xlsx')
+
+
+
+
+asyncio.run(buscar_site.busca_requests(get_parcels()))
+
 
